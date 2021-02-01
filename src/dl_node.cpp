@@ -43,7 +43,7 @@ Status DLNode::fetchResults(NodeSession& nodeSession, SessionResults& nodeSessio
     SessionResult sessionResults{sessionMetadata, {}};
     auto it = nodeSessionOutputs.emplace(sessionMetadata.getSessionKey(), std::move(sessionResults));
     if (!it.second) {
-        SPDLOG_LOGGER_DEBUG(dag_executor_logger, "Failed to put node: {} session: {} results in node session outputs",
+        SPDLOG_LOGGER_ERROR(dag_executor_logger, "Failed to put node: {} session: {} results in node session outputs",
             getName(), nodeSession.getSessionKey());
         return StatusCode::INTERNAL_ERROR;
     }

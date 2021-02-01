@@ -63,7 +63,7 @@ public:
 };
 
 TEST(CustomNodeOutputAllocator, BlobDeallocationCallsReleaseBuffer) {
-    const unsigned int elementsCount = 10;
+    unsigned int elementsCount = 10;
     const InferenceEngine::TensorDesc desc{
         InferenceEngine::Precision::FP32,
         {elementsCount},
@@ -71,11 +71,11 @@ TEST(CustomNodeOutputAllocator, BlobDeallocationCallsReleaseBuffer) {
     std::vector<float> data(elementsCount);
     CustomNodeTensor tensor{
         "name",
-        reinterpret_cast<unsigned char*>(data.data()),
+        reinterpret_cast<uint8_t*>(data.data()),
         sizeof(float) * elementsCount,
-        (int*)&elementsCount,
+        reinterpret_cast<uint64_t*>(&elementsCount),
         1,
-        0};
+        CustomNodeTensorPrecision::FP32};
     NodeLibrary library{
         NodeLibraryCheckingReleaseCalled::execute,
         NodeLibraryCheckingReleaseCalled::releaseBuffer,
@@ -102,7 +102,7 @@ int releaseTensors(struct CustomNodeTensor* outputs) {
 }
 
 TEST(CustomNodeOutputAllocator, BlobReturnsCorrectPointer) {
-    const unsigned int elementsCount = 10;
+    unsigned int elementsCount = 10;
     const InferenceEngine::TensorDesc desc{
         InferenceEngine::Precision::FP32,
         {elementsCount},
@@ -110,11 +110,11 @@ TEST(CustomNodeOutputAllocator, BlobReturnsCorrectPointer) {
     std::vector<float> data(elementsCount);
     CustomNodeTensor tensor{
         "name",
-        reinterpret_cast<unsigned char*>(data.data()),
+        reinterpret_cast<uint8_t*>(data.data()),
         sizeof(float) * elementsCount,
-        (int*)&elementsCount,
+        reinterpret_cast<uint64_t*>(&elementsCount),
         1,
-        0};
+        CustomNodeTensorPrecision::FP32};
     NodeLibrary library{
         execute,
         releaseBuffer,

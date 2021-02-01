@@ -15,9 +15,14 @@
 //*****************************************************************************
 #pragma once
 
+#include <inference_engine.hpp>
+
 #include "custom_node_interface.hpp"
 
 namespace ovms {
+
+CustomNodeTensorPrecision toCustomNodeTensorPrecision(InferenceEngine::Precision precision);
+InferenceEngine::Precision toInferenceEnginePrecision(CustomNodeTensorPrecision precision);
 
 typedef int (*execute_fn)(const struct CustomNodeTensor*, int, struct CustomNodeTensor**, int*, const struct CustomNodeParam*, int);
 typedef int (*release_fn)(struct CustomNodeTensor*);

@@ -15,13 +15,26 @@
 //*****************************************************************************
 #pragma once
 
+#include <stdint.h>
+
+enum CustomNodeTensorPrecision {
+    UNSPECIFIED,
+    FP32,
+    FP16,
+    U8,
+    I8,
+    I16,
+    U16,
+    I32
+};
+
 struct CustomNodeTensor {
     const char* name;
-    unsigned char* data;
-    int dataLength;
-    int* dims;
-    int dimsLength;
-    int precision;
+    uint8_t* data;
+    uint64_t dataLength;
+    uint64_t* dims;
+    uint64_t dimsLength;
+    CustomNodeTensorPrecision precision;
 };
 
 struct CustomNodeParam {

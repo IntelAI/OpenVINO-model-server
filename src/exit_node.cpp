@@ -35,7 +35,6 @@ Status ExitNode::fetchResults(NodeSession& nodeSession, SessionResults& nodeSess
 
 Status ExitNode::execute(session_key_t sessionId, PipelineEventQueue& notifyEndQueue) {
     notifyEndQueue.push(NodeSessionKeyPair(*this, sessionId));
-
     return StatusCode::OK;
 }
 
@@ -53,7 +52,6 @@ Status ExitNode::fetchResults(const BlobMap& inputBlobs) {
 
         SPDLOG_DEBUG("[Node: {}] Serialized blob to proto: blob name {}", getName(), output_name);
     }
-
     return StatusCode::OK;
 }
 
