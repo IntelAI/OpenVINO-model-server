@@ -210,6 +210,7 @@ const Status StatefulModelInstance::postInferenceProcessing(tensorflow::serving:
     // Include sequence_id in server response
     auto& tensorProto = (*response->mutable_outputs())["sequence_id"];
     tensorProto.add_uint64_val(sequenceProcessingSpec.getSequenceId());
+    tensorProto.set_dtype(tensorflow::DataType::DT_UINT64);
 
     return StatusCode::OK;
 }
