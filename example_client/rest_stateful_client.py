@@ -244,18 +244,28 @@ def prepare_processing_data(args):
 
 def validate_output(result_dict, output_names):
     # Validate model output
+    if "outputs" not in result_dict:
+        print("ERROR: Invalid response format. Could not find \'outputs\' key")
+        return False 
+    results = result_dict["outputs"]
+    if type(results) is not dict:
+        print("ERROR: Invalid response format. No named format is not accepted for stateful models")
+        return False 
     for output_name in output_names:
-        if output_name not in result_dict:
+        if output_name not in results:
             print("ERROR: Invalid output name", output_name)
             print("Available outputs:")
-            for o in result_dict:
+            for o in results:
                 print(o)
             return False
-    if 'sequence_id' not in result_dict:
+    if 'sequence_id' not in results:
         print("ERROR: Missing sequence_id in model output")
         print("Available outputs:")
-        for o in result_dict:
+        for o in results:
             print(o)
+        return False
+    elif type(results["sequence_id"]) is not list:
+        print("ERROR: sequence_id received in inappropriate format")
         return False
     return True
 
@@ -386,6 +396,9 @@ def main():
                     "ERROR: Model result validation error. Adding end sequence inference request for the model and exiting.")
                 exit(1)
 
+            print(result_dict)
+            result_dict = result_dict["outputs"]
+
             # Unique sequence_id provided by OVMS
             if get_sequence_id:
                 sequence_id = np.uint64(result_dict['sequence_id'])
@@ -404,7 +417,7 @@ def main():
                     score_data = reference_scores[output_name][sequence_name][score_index]
 
                     # Parse output
-                    results_array = make_ndarray(result_dict[output_name])
+                    results_array = np.asarray(result_dict[output_name])
 
                     # Calculate error
                     avg_rms_error = calculate_utterance_error(

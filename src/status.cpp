@@ -56,7 +56,8 @@ const std::map<const StatusCode, const std::string> Status::statusMessageMap = {
     {StatusCode::SEQUENCE_ID_BAD_TYPE, "Could not find sequence id in expected tensor proto field uint64_val"},
     {StatusCode::SEQUENCE_CONTROL_INPUT_BAD_TYPE, "Could not find sequence control input in expected tensor proto field uint32_val"},
     {StatusCode::SEQUENCE_TERMINATED, "Sequence last request is being processed and it's not available anymore"},
-
+    {StatusCode::SPECIAL_INPUT_NO_TENSOR_SHAPE, "Special input proto does not contain tensor shape information"},
+    
     // Predict request validation
     {StatusCode::INVALID_NO_OF_INPUTS, "Invalid number of inputs"},
     {StatusCode::INVALID_MISSING_INPUT, "Missing input with specific name"},
@@ -100,7 +101,9 @@ const std::map<const StatusCode, const std::string> Status::statusMessageMap = {
     {StatusCode::REST_COULD_NOT_PARSE_INPUT, "Could not parse input content. Not valid ndarray detected"},
     {StatusCode::REST_PROTO_TO_STRING_ERROR, "Response parsing to JSON error"},
     {StatusCode::REST_UNSUPPORTED_PRECISION, "Could not parse input content. Unsupported data precision detected"},
-    {StatusCode::REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE, "Tensor serialization error"},
+    {StatusCode::REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE, "Size of data in tensor_content does not match declared tensor shape"},
+    {StatusCode::REST_SERIALIZE_VAL_FIELD_INVALID_SIZE, "Number of elements in xxx_val field does not match declared tensor shape"},
+    {StatusCode::REST_SERIALIZE_NO_DATA, "No data found in tensor_content or xxx_val field matching tensor dtype"},
 
     // Pipeline validation errors
     {StatusCode::PIPELINE_DEFINITION_ALREADY_EXIST, "Pipeline definition with the same name already exists"},
@@ -199,6 +202,7 @@ const std::map<const StatusCode, grpc::StatusCode> Status::grpcStatusMap = {
     {StatusCode::SEQUENCE_ID_BAD_TYPE, grpc::StatusCode::INVALID_ARGUMENT},
     {StatusCode::SEQUENCE_CONTROL_INPUT_BAD_TYPE, grpc::StatusCode::INVALID_ARGUMENT},
     {StatusCode::SEQUENCE_TERMINATED, grpc::StatusCode::INVALID_ARGUMENT},
+    {StatusCode::SPECIAL_INPUT_NO_TENSOR_SHAPE, grpc::StatusCode::INVALID_ARGUMENT},
 
     // Predict request validation
     {StatusCode::INVALID_NO_OF_INPUTS, grpc::StatusCode::INVALID_ARGUMENT},

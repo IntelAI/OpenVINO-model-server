@@ -42,6 +42,9 @@ public:
         return this->sequenceManager;
     }
 
+    const Status extractSequenceId(const tensorflow::TensorProto& proto, uint64_t& sequenceId);
+
+    const Status extractSequenceControlInput(const tensorflow::TensorProto& proto, uint32_t& sequenceControlInput);
     /*
     Performs pre inference operations:
         - for SEQUENCE_START control input - reset InferRequest memory state

@@ -69,8 +69,9 @@ enum class StatusCode {
     SEQUENCE_ID_NOT_PROVIDED,        /*!< Sequence ID has not been provided in request inputs */
     SEQUENCE_ID_BAD_TYPE,            /*!< Wrong sequence ID type */
     INVALID_SEQUENCE_CONTROL_INPUT,  /*!< Unexpected value of sequence control input */
-    SEQUENCE_CONTROL_INPUT_BAD_TYPE, /*!< Sequence control input in bad type*/
-    SEQUENCE_TERMINATED,             /*!< Sequence last request is being processed and it's not available anymore*/
+    SEQUENCE_CONTROL_INPUT_BAD_TYPE, /*!< Sequence control input in bad type */
+    SEQUENCE_TERMINATED,             /*!< Sequence last request is being processed and it's not available anymore */
+    SPECIAL_INPUT_NO_TENSOR_SHAPE,    /*!< Special input proto does not contain tensor shape information */
 
     // Predict request validation
     INVALID_NO_OF_INPUTS,           /*!< Invalid number of inputs */
@@ -163,7 +164,9 @@ enum class StatusCode {
     REST_COULD_NOT_PARSE_INPUT,          /*!< Error while parsing input content, not valid ndarray */
     REST_PROTO_TO_STRING_ERROR,          /*!< Error while parsing ResponseProto to JSON string */
     REST_UNSUPPORTED_PRECISION,          /*!< Unsupported conversion from tensor_content to _val container */
-    REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE,
+    REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE, /*!< Size of data in tensor_content does not match declared tensor shape */
+    REST_SERIALIZE_VAL_FIELD_INVALID_SIZE, /*!< Number of elements in xxx_val field does not match declared tensor shape */
+    REST_SERIALIZE_NO_DATA,				 /*!< No data found in tensor_content or xxx_val field matching tensor dtype */
 
     // Pipeline validation errors
     PIPELINE_DEFINITION_ALREADY_EXIST,

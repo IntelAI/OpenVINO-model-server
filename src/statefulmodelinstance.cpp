@@ -27,7 +27,20 @@ using namespace InferenceEngine;
 
 namespace ovms {
 
-const Status extractSequenceId(const tensorflow::TensorProto& proto, uint64_t& sequenceId) {
+const Status StatefulModelInstance::extractSequenceId(const tensorflow::TensorProto& proto, uint64_t& sequenceId) {
+    if (!proto.tensor_shape().dim_size()) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence id tensor proto does not contain tensor shape information", getName(), getVersion());
+        return StatusCode::SPECIAL_INPUT_NO_TENSOR_SHAPE;
+    } else if (proto.tensor_shape().dim_size() != 1) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence id tensor proto shape has invalid number of dimensions. Expecting shape with one dimension", getName(), getVersion());
+        return Status(StatusCode::INVALID_NO_OF_SHAPE_DIMENSIONS, "Required shape for sequence_id is: (1)");
+    }
+
+    if (proto.tensor_shape().dim(0).size() != 1) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence id tensor proto shape has invalid shape. Expecting shape: (1)", getName(), getVersion());
+        return Status(StatusCode::INVALID_SHAPE, "Required shape for sequence_id is: (1)");
+    }
+
     if (proto.uint64_val_size() == 1) {
         sequenceId = proto.uint64_val(0);
         return StatusCode::OK;
@@ -35,7 +48,20 @@ const Status extractSequenceId(const tensorflow::TensorProto& proto, uint64_t& s
     return StatusCode::SEQUENCE_ID_BAD_TYPE;
 }
 
-const Status extractSequenceControlInput(const tensorflow::TensorProto& proto, uint32_t& sequenceControlInput) {
+const Status StatefulModelInstance::extractSequenceControlInput(const tensorflow::TensorProto& proto, uint32_t& sequenceControlInput) {
+    if (proto.tensor_shape().dim_size() == 0) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence control tensor proto does not contain tensor shape information", getName(), getVersion());
+        return StatusCode::SPECIAL_INPUT_NO_TENSOR_SHAPE;
+    } else if (proto.tensor_shape().dim_size() != 1) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence control tensor proto shape has invalid number of dimensions. Expecting shape with one dimension.", getName(), getVersion());
+        return Status(StatusCode::INVALID_NO_OF_SHAPE_DIMENSIONS, "Required shape for sequence_control_input is: (1)");
+    }
+
+    if (proto.tensor_shape().dim(0).size() != 1) {
+        SPDLOG_DEBUG("[Model: {} version: {}] Sequence control tensor proto shape has invalid shape. Expecting shape: (1)", getName(), getVersion());
+        return Status(StatusCode::INVALID_SHAPE, "Required shape for sequence_control_input is: (1)");
+    }
+
     if (proto.uint32_val_size() == 1) {
         sequenceControlInput = proto.uint32_val(0);
         return StatusCode::OK;
@@ -209,8 +235,9 @@ const Status StatefulModelInstance::postInferenceProcessing(tensorflow::serving:
 
     // Include sequence_id in server response
     auto& tensorProto = (*response->mutable_outputs())["sequence_id"];
-    tensorProto.add_uint64_val(sequenceProcessingSpec.getSequenceId());
+    tensorProto.mutable_tensor_shape()->add_dim()->set_size(1);
     tensorProto.set_dtype(tensorflow::DataType::DT_UINT64);
+    tensorProto.add_uint64_val(sequenceProcessingSpec.getSequenceId());
 
     return StatusCode::OK;
 }

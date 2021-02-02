@@ -312,16 +312,16 @@ def main():
             # Add sequence start
             if x == 0:
                 request.inputs['sequence_control_input'].CopyFrom(
-                    make_tensor_proto(SEQUENCE_START, dtype="uint32"))
+                    make_tensor_proto([SEQUENCE_START], dtype="uint32"))
 
             # Set sequence id
             request.inputs['sequence_id'].CopyFrom(
-                make_tensor_proto(sequence_id, dtype="uint64"))
+                make_tensor_proto([sequence_id], dtype="uint64"))
 
             # Add sequence end
             if x == sequence_size + cw_l + cw_r - 1:
                 request.inputs['sequence_control_input'].CopyFrom(
-                    make_tensor_proto(SEQUENCE_END, dtype="uint32"))
+                    make_tensor_proto([SEQUENCE_END], dtype="uint32"))
 
             start_time = datetime.datetime.now()
             # result includes a dictionary with all model outputs
@@ -332,7 +332,7 @@ def main():
                 print(
                     "ERROR: Model result validation error. Adding end sequence inference request for the model and exiting.")
                 request.inputs['sequence_control_input'].CopyFrom(
-                    make_tensor_proto(SEQUENCE_END, dtype="uint32"))
+                    make_tensor_proto([SEQUENCE_END], dtype="uint32"))
                 result = stub.Predict(request, 10.0)
                 exit(1)
 

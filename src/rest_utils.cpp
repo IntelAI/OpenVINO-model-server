@@ -32,6 +32,15 @@ using tensorflow::serving::MakeJsonFromTensors;
 using tensorflow::serving::PredictResponse;
 
 namespace ovms {
+
+Status checkValField(const size_t& fieldSize, const size_t& expectedElementsNumber) {
+    if (fieldSize == 0)
+            return StatusCode::REST_SERIALIZE_NO_DATA;
+    if (fieldSize != expectedElementsNumber)
+            return StatusCode::REST_SERIALIZE_VAL_FIELD_INVALID_SIZE;
+    return StatusCode::OK;
+}
+
 Status makeJsonFromPredictResponse(
     PredictResponse& response_proto,
     std::string* response_json,
@@ -48,59 +57,108 @@ Status makeJsonFromPredictResponse(
     for (auto& kv : *response_proto.mutable_outputs()) {
         auto& tensor = kv.second;
 
-        size_t expected_content_size = DataTypeSize(tensor.dtype());
+        size_t expectedContentSize = DataTypeSize(tensor.dtype());
         for (int i = 0; i < tensor.tensor_shape().dim_size(); i++) {
-            expected_content_size *= tensor.tensor_shape().dim(i).size();
+            expectedContentSize *= tensor.tensor_shape().dim(i).size();
         }
+        size_t expectedElementsNumber = expectedContentSize / DataTypeSize(tensor.dtype());
+        bool seekDataInValField = false;
 
-        if (tensor.tensor_content().size() != expected_content_size) {
+        if (tensor.tensor_content().size() == 0)
+            seekDataInValField = true;
+        else if (tensor.tensor_content().size() != expectedContentSize) 
             return StatusCode::REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE;
-        }
+        
 
         switch (tensor.dtype()) {
         case DataType::DT_FLOAT:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(float)) {
-                tensor.add_float_val(*reinterpret_cast<float*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.float_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(float))
+                    tensor.add_float_val(*reinterpret_cast<float*>(tensor.mutable_tensor_content()->data() + i));     
             }
             break;
         case DataType::DT_DOUBLE:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(double)) {
-                tensor.add_double_val(*reinterpret_cast<double*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                    auto status = checkValField(tensor.double_val_size(), expectedElementsNumber);
+                    if (!status.ok())
+                        return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(double))
+                    tensor.add_double_val(*reinterpret_cast<double*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_INT32:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int32_t)) {
-                tensor.add_int_val(*reinterpret_cast<int32_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.int_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int32_t))
+                    tensor.add_int_val(*reinterpret_cast<int32_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_INT16:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int16_t)) {
-                tensor.add_int_val(*reinterpret_cast<int16_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.int_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int16_t))
+                    tensor.add_int_val(*reinterpret_cast<int16_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_INT8:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int8_t)) {
-                tensor.add_int_val(*reinterpret_cast<int8_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.int_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int8_t))
+                    tensor.add_int_val(*reinterpret_cast<int8_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_UINT8:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint8_t)) {
-                tensor.add_int_val(*reinterpret_cast<uint8_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.int_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint8_t))
+                    tensor.add_int_val(*reinterpret_cast<uint8_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_INT64:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int64_t)) {
-                tensor.add_int64_val(*reinterpret_cast<int64_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.int64_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(int64_t))
+                    tensor.add_int64_val(*reinterpret_cast<int64_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_UINT32:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint32_t)) {
-                tensor.add_uint32_val(*reinterpret_cast<uint32_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.uint32_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint32_t))
+                    tensor.add_uint32_val(*reinterpret_cast<uint32_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_UINT64:
-            for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint64_t)) {
-                tensor.add_uint64_val(*reinterpret_cast<uint64_t*>(tensor.mutable_tensor_content()->data() + i));
+            if (seekDataInValField) {
+                auto status = checkValField(tensor.uint64_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
+            } else {
+                for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(uint64_t))
+                    tensor.add_uint64_val(*reinterpret_cast<uint64_t*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         default:
