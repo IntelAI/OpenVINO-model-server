@@ -239,6 +239,7 @@ cc_test(
     srcs = [
         "test/deserialization_tests.cpp",
         "test/ensemble_tests.cpp",
+        "test/ensemble_flow_custom_node_tests.cpp",
         "test/ensemble_mapping_config_tests.cpp",
         "test/ensemble_metadata_test.cpp",
         "test/ensemble_config_change_stress.cpp",

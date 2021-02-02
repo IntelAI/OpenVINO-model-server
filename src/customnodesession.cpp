@@ -83,7 +83,7 @@ Status CustomNodeSession::execute(PipelineEventQueue& notifyEndQueue, Node& node
         // Cleanup whatever is possible
         this->library.releaseTensors(outputTensors);
         notifyEndQueue.push({node, getSessionKey()});
-        return StatusCode::NODE_LIBRARY_OUTPUTS_CORRUPTED;
+        return StatusCode::NODE_LIBRARY_OUTPUTS_CORRUPTED_COUNT;
     }
 
     // At this point this is important we do not exit before finishing the loop.
@@ -97,7 +97,7 @@ Status CustomNodeSession::execute(PipelineEventQueue& notifyEndQueue, Node& node
             SPDLOG_LOGGER_ERROR(dag_executor_logger, "Node {}; session: {}; has corrupted output: {}; cannot convert to blob", getName(), getSessionKey(), outputTensors[i].name);
             // Cleanup whatever is possible
             this->library.releaseBuffer(&outputTensors[i]);
-            status = StatusCode::NODE_LIBRARY_OUTPUTS_CORRUPTED;
+            status = result;
             continue;
         }
         this->resultBlobs.emplace(std::make_pair(std::string(outputTensors[i].name), std::move(resultBlob)));
