@@ -97,7 +97,9 @@ Status CustomNodeSession::execute(PipelineEventQueue& notifyEndQueue, Node& node
             SPDLOG_LOGGER_ERROR(dag_executor_logger, "Node {}; session: {}; has corrupted output: {}; cannot convert to blob", getName(), getSessionKey(), outputTensors[i].name);
             // Cleanup whatever is possible
             this->library.releaseBuffer(&outputTensors[i]);
-            status = result;
+            if (status.ok()) {
+                status = result;
+            }
             continue;
         }
         this->resultBlobs.emplace(std::make_pair(std::string(outputTensors[i].name), std::move(resultBlob)));
