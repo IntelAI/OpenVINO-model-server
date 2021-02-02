@@ -92,11 +92,10 @@ class RestParser {
      */
     static bool addValue(tensorflow::TensorProto& proto, const rapidjson::Value& value);
 
-
     bool parseSequenceIdInput(rapidjson::Value& doc, tensorflow::TensorProto& proto, const std::string& tensorName);
     bool parseSequenceControlInput(rapidjson::Value& doc, tensorflow::TensorProto& proto, const std::string& tensorName);
     bool parseSpecialInput(rapidjson::Value& doc, tensorflow::TensorProto& proto, const std::string& tensorName);
-    
+
     /**
      * @brief Parses rapidjson Node for arrays or numeric values on certain level of nesting.
      * 

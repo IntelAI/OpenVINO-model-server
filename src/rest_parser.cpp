@@ -55,7 +55,7 @@ bool RestParser::parseSequenceIdInput(rapidjson::Value& doc, tensorflow::TensorP
         if (value.IsUint64())
             proto.add_uint64_val(value.GetUint64());
         else
-            return false;       
+            return false;
     }
     return true;
 }
@@ -66,7 +66,7 @@ bool RestParser::parseSequenceControlInput(rapidjson::Value& doc, tensorflow::Te
         if (value.IsUint())
             proto.add_uint32_val(value.GetUint());
         else
-            return false;       
+            return false;
     }
     return true;
 }
@@ -75,12 +75,12 @@ bool RestParser::parseSpecialInput(rapidjson::Value& doc, tensorflow::TensorProt
     // Special tensors are given in 1 dimentional array
     if (doc.GetArray()[0].IsArray())
         return false;
-    
+
     if (tensorName == "sequence_id")
         return parseSequenceIdInput(doc, proto, tensorName);
     else if (tensorName == "sequence_control_input")
         return parseSequenceControlInput(doc, proto, tensorName);
-    
+
     return false;
 }
 

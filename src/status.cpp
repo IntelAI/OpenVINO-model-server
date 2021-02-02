@@ -57,7 +57,7 @@ const std::map<const StatusCode, const std::string> Status::statusMessageMap = {
     {StatusCode::SEQUENCE_CONTROL_INPUT_BAD_TYPE, "Could not find sequence control input in expected tensor proto field uint32_val"},
     {StatusCode::SEQUENCE_TERMINATED, "Sequence last request is being processed and it's not available anymore"},
     {StatusCode::SPECIAL_INPUT_NO_TENSOR_SHAPE, "Special input proto does not contain tensor shape information"},
-    
+
     // Predict request validation
     {StatusCode::INVALID_NO_OF_INPUTS, "Invalid number of inputs"},
     {StatusCode::INVALID_MISSING_INPUT, "Missing input with specific name"},

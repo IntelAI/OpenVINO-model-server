@@ -71,7 +71,7 @@ enum class StatusCode {
     INVALID_SEQUENCE_CONTROL_INPUT,  /*!< Unexpected value of sequence control input */
     SEQUENCE_CONTROL_INPUT_BAD_TYPE, /*!< Sequence control input in bad type */
     SEQUENCE_TERMINATED,             /*!< Sequence last request is being processed and it's not available anymore */
-    SPECIAL_INPUT_NO_TENSOR_SHAPE,    /*!< Special input proto does not contain tensor shape information */
+    SPECIAL_INPUT_NO_TENSOR_SHAPE,   /*!< Special input proto does not contain tensor shape information */
 
     // Predict request validation
     INVALID_NO_OF_INPUTS,           /*!< Invalid number of inputs */
@@ -150,23 +150,23 @@ enum class StatusCode {
     REST_MALFORMED_REQUEST,       /*!< Malformed REST request */
 
     // REST Parse
-    REST_BODY_IS_NOT_AN_OBJECT,          /*!< REST body should be JSON object */
-    REST_PREDICT_UNKNOWN_ORDER,          /*!< Could not detect order (row/column) */
-    REST_INSTANCES_NOT_AN_ARRAY,         /*!< When parsing row order, instances must be an array */
-    REST_NAMED_INSTANCE_NOT_AN_OBJECT,   /*!< When parsing named instance it needs to be an object */
-    REST_INPUT_NOT_PREALLOCATED,         /*!< When parsing no named instance, exactly one input need to be preallocated */
-    REST_NO_INSTANCES_FOUND,             /*!< Missing instances in row order */
-    REST_INSTANCES_NOT_NAMED_OR_NONAMED, /*!< Unknown instance format, neither named or nonamed */
-    REST_COULD_NOT_PARSE_INSTANCE,       /*!< Error while parsing instance content, not valid ndarray */
-    REST_INSTANCES_BATCH_SIZE_DIFFER,    /*!< In row order 0-th dimension (batch size) must be equal for all inputs */
-    REST_INPUTS_NOT_AN_OBJECT,           /*!< When parsing column order, inputs must be an object */
-    REST_NO_INPUTS_FOUND,                /*!< Missing inputs in column order */
-    REST_COULD_NOT_PARSE_INPUT,          /*!< Error while parsing input content, not valid ndarray */
-    REST_PROTO_TO_STRING_ERROR,          /*!< Error while parsing ResponseProto to JSON string */
-    REST_UNSUPPORTED_PRECISION,          /*!< Unsupported conversion from tensor_content to _val container */
+    REST_BODY_IS_NOT_AN_OBJECT,                 /*!< REST body should be JSON object */
+    REST_PREDICT_UNKNOWN_ORDER,                 /*!< Could not detect order (row/column) */
+    REST_INSTANCES_NOT_AN_ARRAY,                /*!< When parsing row order, instances must be an array */
+    REST_NAMED_INSTANCE_NOT_AN_OBJECT,          /*!< When parsing named instance it needs to be an object */
+    REST_INPUT_NOT_PREALLOCATED,                /*!< When parsing no named instance, exactly one input need to be preallocated */
+    REST_NO_INSTANCES_FOUND,                    /*!< Missing instances in row order */
+    REST_INSTANCES_NOT_NAMED_OR_NONAMED,        /*!< Unknown instance format, neither named or nonamed */
+    REST_COULD_NOT_PARSE_INSTANCE,              /*!< Error while parsing instance content, not valid ndarray */
+    REST_INSTANCES_BATCH_SIZE_DIFFER,           /*!< In row order 0-th dimension (batch size) must be equal for all inputs */
+    REST_INPUTS_NOT_AN_OBJECT,                  /*!< When parsing column order, inputs must be an object */
+    REST_NO_INPUTS_FOUND,                       /*!< Missing inputs in column order */
+    REST_COULD_NOT_PARSE_INPUT,                 /*!< Error while parsing input content, not valid ndarray */
+    REST_PROTO_TO_STRING_ERROR,                 /*!< Error while parsing ResponseProto to JSON string */
+    REST_UNSUPPORTED_PRECISION,                 /*!< Unsupported conversion from tensor_content to _val container */
     REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE, /*!< Size of data in tensor_content does not match declared tensor shape */
-    REST_SERIALIZE_VAL_FIELD_INVALID_SIZE, /*!< Number of elements in xxx_val field does not match declared tensor shape */
-    REST_SERIALIZE_NO_DATA,				 /*!< No data found in tensor_content or xxx_val field matching tensor dtype */
+    REST_SERIALIZE_VAL_FIELD_INVALID_SIZE,      /*!< Number of elements in xxx_val field does not match declared tensor shape */
+    REST_SERIALIZE_NO_DATA,                     /*!< No data found in tensor_content or xxx_val field matching tensor dtype */
 
     // Pipeline validation errors
     PIPELINE_DEFINITION_ALREADY_EXIST,

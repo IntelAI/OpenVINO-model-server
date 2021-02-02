@@ -35,9 +35,9 @@ namespace ovms {
 
 Status checkValField(const size_t& fieldSize, const size_t& expectedElementsNumber) {
     if (fieldSize == 0)
-            return StatusCode::REST_SERIALIZE_NO_DATA;
+        return StatusCode::REST_SERIALIZE_NO_DATA;
     if (fieldSize != expectedElementsNumber)
-            return StatusCode::REST_SERIALIZE_VAL_FIELD_INVALID_SIZE;
+        return StatusCode::REST_SERIALIZE_VAL_FIELD_INVALID_SIZE;
     return StatusCode::OK;
 }
 
@@ -66,9 +66,8 @@ Status makeJsonFromPredictResponse(
 
         if (tensor.tensor_content().size() == 0)
             seekDataInValField = true;
-        else if (tensor.tensor_content().size() != expectedContentSize) 
+        else if (tensor.tensor_content().size() != expectedContentSize)
             return StatusCode::REST_SERIALIZE_TENSOR_CONTENT_INVALID_SIZE;
-        
 
         switch (tensor.dtype()) {
         case DataType::DT_FLOAT:
@@ -78,14 +77,14 @@ Status makeJsonFromPredictResponse(
                     return status;
             } else {
                 for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(float))
-                    tensor.add_float_val(*reinterpret_cast<float*>(tensor.mutable_tensor_content()->data() + i));     
+                    tensor.add_float_val(*reinterpret_cast<float*>(tensor.mutable_tensor_content()->data() + i));
             }
             break;
         case DataType::DT_DOUBLE:
             if (seekDataInValField) {
-                    auto status = checkValField(tensor.double_val_size(), expectedElementsNumber);
-                    if (!status.ok())
-                        return status;
+                auto status = checkValField(tensor.double_val_size(), expectedElementsNumber);
+                if (!status.ok())
+                    return status;
             } else {
                 for (size_t i = 0; i < tensor.tensor_content().size(); i += sizeof(double))
                     tensor.add_double_val(*reinterpret_cast<double*>(tensor.mutable_tensor_content()->data() + i));
